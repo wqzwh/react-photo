@@ -1,0 +1,8 @@
+{
+  "generator-react-webpack": {
+    "appName": "reactPhoto",
+    "style": "sass",
+    "postcss": true,
+    "generatedWithVersion": 3
+  }
+}
