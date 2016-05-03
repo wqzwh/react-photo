@@ -22,23 +22,17 @@ function getRangeRandom(low,hight){
 	return Math.ceil(Math.random()*(hight-low)+low);
 };
 
-// 底部按钮组件
-class ControllerUnits extends React.Component{
-	render(){
-		return (
-			
-			)
-	}
-}
-
 //图片组件 
-class ImgFigure extends React.Component{
-	render(){
+let ImgFigure=React.createClass({
+	render:function(){
 		let styleObj={};
+
 		//如果props属性中指定了这张图片的位置，则使用
 		if(this.props.arrange.pos){
 			styleObj=this.props.arrange.pos;
+
 		}
+
 		return (
 			<figure className="img-figure" style={styleObj}>
 				<img src={this.props.data.imageURL}
@@ -49,14 +43,32 @@ class ImgFigure extends React.Component{
 			</figure>
 			)
 	}
-}
 
-class AppComponent extends React.Component{
+	
+})
+
+let AppComponent=React.createClass({
+	Constant:{
+		// 定义常量
+		centerPos:{
+			left:0,
+			right:0
+		},
+		hPosRange:{	//水平方向的取值范围
+			leftSecX:[0,0],
+			rightSecX:[0,0],
+			y:[0,0]
+		},
+		vPosRange:{	//垂直方向的取值范围
+			x:[0,0],
+			topY:[0,0]
+		}
+	},
 	//根据计算的边界定义一个排布的函数
 	//centerIndex指定居中的图片
-	rearrange(centerIndex) {
+	rearrange:function(centerIndex) {
 		let imgsArrangeArr=this.state.imgsArrangeArr,
-			Constant=this.props.Constant,
+			Constant=this.Constant,
 			centerPos=Constant.centerPos,
 			hPosRange=Constant.hPosRange,
 			vPosRange=Constant.vPosRange,
@@ -114,13 +126,23 @@ class AppComponent extends React.Component{
 			this.setState({
 				imgsArrangeArr:imgsArrangeArr
 			});
-	}
-	constructor(props) {
-	    super(props);
-	    this.state = {imgsArrangeArr: []};
-	}
+
+	},
+	getInitialState:function() {
+		return {
+			imgsArrangeArr:[
+				// {
+				// 	pos:{
+				// 		left:'0',
+				// 		top:'0'
+				// 	}
+				// }
+			]
+		}
+	},
 	// 组件加载以后，为每张图片计算其位置的范围
-	componentDidMount() {
+	componentDidMount:function() {
+
 		// 获取界面的大小
 		let stageDom=ReactDom.findDOMNode(this.refs.stage),
 			stageW=stageDom.scrollWidth,
@@ -134,30 +156,29 @@ class AppComponent extends React.Component{
 			halfImgW=Math.ceil(imgW/2),
 			halfImgH=Math.ceil(imgH/2);
 		// 居中的位置
-		this.props.Constant.centerPos={
+		this.Constant.centerPos={
 			left:halfStageW-halfImgW,
 			top:halfStageH-halfImgH
 		};
 		// 计算左侧，右侧的边界位置
-		this.props.Constant.hPosRange.leftSecX[0]=-halfImgW;
-		this.props.Constant.hPosRange.leftSecX[1]=halfStageW-halfImgW * 3;
-		this.props.Constant.hPosRange.rightSecX[0]=(halfStageW+halfImgW);
-		this.props.Constant.hPosRange.rightSecX[1]=stageW-halfImgW;
-		this.props.Constant.hPosRange.y[0]=-halfImgH;
-		this.props.Constant.hPosRange.y[0]=stageH-halfImgH;
+		this.Constant.hPosRange.leftSecX[0]=-halfImgW;
+		this.Constant.hPosRange.leftSecX[1]=halfStageW-halfImgW * 3;
+		this.Constant.hPosRange.rightSecX[0]=(halfStageW+halfImgW);
+		this.Constant.hPosRange.rightSecX[1]=stageW-halfImgW;
+		this.Constant.hPosRange.y[0]=-halfImgH;
+		this.Constant.hPosRange.y[0]=stageH-halfImgH;
 		// 计算上侧的边界位置
-		this.props.Constant.vPosRange.topY[0]=-halfImgH;
-		this.props.Constant.vPosRange.topY[1]=halfStageH-halfImgH * 3;
-		this.props.Constant.vPosRange.x[0]=halfImgW-imgW;
-		this.props.Constant.vPosRange.x[1]=halfImgW;
+		this.Constant.vPosRange.topY[0]=-halfImgH;
+		this.Constant.vPosRange.topY[1]=halfStageH-halfImgH * 3;
+		this.Constant.vPosRange.x[0]=halfImgW-imgW;
+		this.Constant.vPosRange.x[1]=halfImgW;
 
 		// 调用排布函数
 		this.rearrange(0);
-	}
-	render() {
+	},
+	render:function() {
 		let controllerUnits=[],
 			imgFigures=[];
-
 		imageDatas.forEach(function(value,index){
 
 			if(!this.state.imgsArrangeArr[index]){
@@ -183,25 +204,9 @@ class AppComponent extends React.Component{
 		</section>
 		);
 	}
-}
+})
 
 AppComponent.defaultProps = {
-	Constant:{
-		// 定义常量
-		centerPos:{
-			left:0,
-			right:0
-		},
-		hPosRange:{	//水平方向的取值范围
-			leftSecX:[0,0],
-			rightSecX:[0,0],
-			y:[0,0]
-		},
-		vPosRange:{	//垂直方向的取值范围
-			x:[0,0],
-			topY:[0,0]
-		}
-	}
 };
 
 export default AppComponent;
