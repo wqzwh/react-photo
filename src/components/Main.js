@@ -26,7 +26,7 @@ function getRangeRandom(low,hight){
 class ControllerUnits extends React.Component{
 	render(){
 		return (
-			
+			<span id={"nav_"+this.props.id} onclick="" className="i"></span>
 			)
 	}
 }
@@ -40,13 +40,19 @@ class ImgFigure extends React.Component{
 			styleObj=this.props.arrange.pos;
 		}
 		return (
-			<figure className="img-figure" style={styleObj}>
-				<img src={this.props.data.imageURL}
-					 alt={this.props.data.title}/>
-				<figcaption>
-					<h2 className="img-title">{this.props.data.title}</h2>
-				</figcaption>
-			</figure>
+			<div className="photo photo_front" style={styleObj}>
+				<div className="photo-wrap">
+					<div className="side side-front">
+						<p className="image">
+							<img src={this.props.data.imageURL} alt={this.props.data.title}/>
+						</p>
+						<p className="caption">{this.props.data.title}</p>
+					</div>
+					<div className="side side-back">
+						<p className="desc">{this.props.data.desc}</p>
+					</div>
+				</div>
+			</div>
 			)
 	}
 }
@@ -170,7 +176,20 @@ class AppComponent extends React.Component{
 			}
 
 			imgFigures.push(<ImgFigure key={index} data={value} ref={'imgFigure'+index} arrange={this.state.imgsArrangeArr[index]} />);
-		}.bind(this));	
+		}.bind(this));
+
+		imageDatas.forEach(function(value,index){
+			if(!this.state.imgsArrangeArr[index]){
+				this.state.imgsArrangeArr[index]={
+					pos:{
+						left:0,
+						top:0
+					}
+				}
+			}
+
+			controllerUnits.push(<ControllerUnits key={index} id={index} data={value} ref={'controllerUnits'+index} arrange={this.state.imgsArrangeArr[index]} />);
+		}.bind(this));
 			
 	return (
 		<section className="stage" ref="stage">
