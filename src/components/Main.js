@@ -29,9 +29,35 @@ function get30DegRandom(){
 
 // 底部按钮组件
 class ControllerUnits extends React.Component{
+	handlerClick(e){
+		e.preventDefault();
+		e.stopPropagation();
+
+		// 如果点击的是当前正在选中的按钮，则翻转图片，否则居中图片
+		if(this.props.arrange.isCenter){
+			this.props.inverse()
+		}else{
+			this.props.center();
+		}
+	}
 	render(){
+
+		let controllerUnitClassName="controller-unit";
+
+		// 如果对应的是居中的图片，显示控制按钮的居中状态
+		
+		if(this.props.arrange.isCenter){
+			controllerUnitClassName+=" is-center";
+
+			// 如果同时对应的是翻转图片，显示控制按钮的翻转状态
+			if(this.props.arrange.isInverse){
+				controllerUnitClassName+=" is-inverse";
+			}
+		}
+
+
 		return (
-			<span id={"nav_"+this.props.id} onclick="" className="i"></span>
+			<span onClick={this.handlerClick.bind(this)} className={controllerUnitClassName}></span>
 			)
 	}
 }
@@ -41,13 +67,14 @@ class ImgFigure extends React.Component{
 	handlerClick(e){
 		e.stopPropagation();
 		e.preventDefault();
-		
+		console.log(this);
+		console.log(this.props.arrange.isInverse);
 		if (this.props.arrange.isCenter){
-			console.log(this.props.inverse());
 			this.props.inverse();
 		}else{
 			this.props.center();
 		}
+		
 	}
 	render(){
 		let styleObj={};
@@ -58,26 +85,24 @@ class ImgFigure extends React.Component{
 		// 如果图片的旋转角度有值并且不为0，添加旋转角度
 		if(this.props.arrange.rotate){
 			// 兼容不同版本的浏览器
-			(['-moz-','-ms-','-webkit-','']).map(function(value){
-				styleObj[value+'transform']='rotate('+this.props.arrange.rotate+'deg)';
+			(['MozTransform','msTransform','WebkitTransform','transform']).map(function(value){
+				styleObj[value]='rotate('+this.props.arrange.rotate+'deg)';
 			}.bind(this));
 		}
 		if(this.props.arrange.isCenter){
 			styleObj.zIndex=11;
 		}
 
-		var imgFigureClassName='img-figure';
-		imgFigureClassName=imgFigureClassName+(this.props.arrange.isInverse ? ' is-inverse': '');
-
-		console.log(this.props.arrange.isInverse);
-
+		let imgFigureClassName='img-figure';
+		imgFigureClassName=imgFigureClassName+(this.props.arrange.isInverse ? ' is-inverse' : '');
+		
 		return (
 			<figure className={imgFigureClassName} style={styleObj} onClick={this.handlerClick.bind(this)}>
 				<img src={this.props.data.imageURL}
 					 alt={this.props.data.title}/>
-				<figcaption>
+				<figcaption className='img-back'>
 					<h2 className="img-title">{this.props.data.title}</h2>
-					<div className='img-back' onClick={this.handlerClick.bind(this)}>
+					<div>
 						<p>
 							{this.props.data.desc}
 						</p>
@@ -95,7 +120,6 @@ class AppComponent extends React.Component{
 	 * 闭包函数{function}
 	 * 
 	 */
-	
 	center(index){
 		return function(){
 			this.rearrange(index);
@@ -138,7 +162,7 @@ class AppComponent extends React.Component{
 			vPosRangeX=vPosRange.x,
 
 			imgsArrangeTopArr=[],
-			topImgNum=Math.ceil(Math.random()*2),//取一个或者不取
+			topImgNum=Math.floor(Math.random()*2),//取一个或者不取
 			topImgSpliceIndex=0,
 			imgsArrangeCenterArr=imgsArrangeArr.splice(centerIndex,1);
 
@@ -165,6 +189,7 @@ class AppComponent extends React.Component{
 					},
 					rotate:get30DegRandom(),
 					isCenter:false,
+					isInverse:false,
 				};
 			});
 
@@ -187,6 +212,7 @@ class AppComponent extends React.Component{
 					},
 					rotate:get30DegRandom(),
 					isCenter:false,
+					isInverse:false,
 				};
 			}
 
@@ -275,20 +301,14 @@ class AppComponent extends React.Component{
 				arrange={this.state.imgsArrangeArr[index]} 
 				inverse={this.inverse(index)}
 				center={this.center(index)}/>);
+
+			controllerUnits.push(<ControllerUnits 
+				key={index} 
+				data={value} 
+				arrange={this.state.imgsArrangeArr[index]} 
+				inverse={this.inverse(index)}
+				center={this.center(index)} />);
 		}.bind(this));
-
-		// imageDatas.forEach(function(value,index){
-		// 	if(!this.state.imgsArrangeArr[index]){
-		// 		this.state.imgsArrangeArr[index]={
-		// 			pos:{
-		// 				left:0,
-		// 				top:0
-		// 			}
-		// 		}
-		// 	}
-
-		// 	controllerUnits.push(<ControllerUnits key={index} id={index} data={value} ref={'controllerUnits'+index} arrange={this.state.imgsArrangeArr[index]} />);
-		// }.bind(this));
 			
 	return (
 		<section className="stage" ref="stage">

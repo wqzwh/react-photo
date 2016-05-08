@@ -1,4 +1,9 @@
 /* Base Application Styles */
+
+@font-face{
+    font-family: "icons-turn-arrow";
+    src:url("../font/icon/icons-turn-arrow.eot").format("embedded-opentype"),url("../font/icon/icons-turn-arrow.svg").format("svg"),url("../font/icon/icons-turn-arrow.ttf").format("truetype"),url("../font/icon/icons-turn-arrow.woff").format("woff");
+}
 html,body {
   width:100%;
   height:100%;
@@ -46,6 +51,23 @@ html,body {
 
 
 }
+.img-back{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    padding:50px 40px;
+    overflow: auto;
+    color:#a7a7a7;
+    font-size: 22px;
+    text-align: left;
+    line-height: 1.25;
+    backface-visibility: hidden;
+    transform: rotateY(180deg) translateZ(1px);
+    background-color: #fff;
+    box-sizing:border-box;
+}
 .is-inverse{
     transform:translate(320px) rotateY(180deg);
 }
@@ -53,6 +75,8 @@ html,body {
   float: left;
   width: 240px;
   height:260px;
+  backface-visibility: hidden;
+  overflow: hidden;
 }
 figcaption{
   text-align: center;
@@ -64,9 +88,6 @@ figcaption{
 }
 
 /*image --end*/
-.is-inverse{
-
-}
 
 /*controller -start*/
 .controller-nav{
@@ -77,5 +98,32 @@ figcaption{
   text-align: center;
   width: 100%;
 }
+.controller-unit{
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin:0 5px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #aaa;
+    border-radius: 50%;
+    transform:scale(.5);
+    transition:transform .6s ease-in-out,background-color .3s;
+}
+.controller-nav .is_center{
+    transform:scale(1);
+    background-color: #888;
+}
 
+.is_center::after{
+    color: #fff;
+    font-family: "icons-turn-arrow";
+    font-size: 80%;
+    /*开启字体的灰阶渲染*/
+    -webkit-font-smoothing:antialiased;
+}
+.controller-nav .is_inverse{
+    background-color: #555;
+    transform:rotateY(180deg);
+}
 /*controller --end*/
